@@ -54,7 +54,7 @@ func runHTTP(port int) error {
 	defer stop()
 
 	for {
-		err := connect(port)
+		err := connect(ctx, port)
 		select {
 		case <-ctx.Done():
 			fmt.Println("\ntunnel closed")
@@ -66,7 +66,7 @@ func runHTTP(port int) error {
 	}
 }
 
-func connect(port int) error {
+func connect(ctx context.Context, port int) error {
 	tlsCfg := &tls.Config{
 		InsecureSkipVerify: flagInsecure,
 	}
@@ -107,7 +107,6 @@ func connect(port int) error {
 		_ = proto.Decode(env, &e)
 		return fmt.Errorf("server rejected tunnel: %s", e.Message)
 	case proto.MsgHelloAck:
-
 	default:
 		return fmt.Errorf("unexpected message: %s", env.Type)
 	}
@@ -129,7 +128,20 @@ func connect(port int) error {
 
 	go acceptStreams(mux, localAddr)
 
-	return heartbeat(ctrl)
+	select {
+	case <-ctx.Done():
+		return nil
+	case err := <-heartbeatDone(ctrl):
+		return err
+	}
+}
+
+func heartbeatDone(ctrl net.Conn) <-chan error {
+	ch := make(chan error, 1)
+	go func() {
+					ch <- heartbeat(ctrl)
+	}()
+	return ch
 }
 
 func acceptStreams(mux *yamux.Session, localAddr string) {
