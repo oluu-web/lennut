@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-VERSION=${1:-latest}
+VERSION=$${1:-v0.1.0}
 BINARY_NAME="revtunnel"
 INSTALL_DIR="/usr/local/bin"
 BASE_URL="https://github.com/oluu-web/revtunnel/releases/download/$VERSION"
