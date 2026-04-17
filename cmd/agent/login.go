@@ -111,14 +111,14 @@ func controlPlaneBase(tunnelAddr string) string {
 
 	lastColon := strings.LastIndex(tunnelAddr, ":")
 	if lastColon == -1 {
-		return "http://" + tunnelAddr + ":8080"
+		return "https://" + tunnelAddr
 	}
 
 	host := tunnelAddr[:lastColon]
 	port := tunnelAddr[lastColon+1:]
 
 	if port == "4443" {
-		return "http://" + host + ":8080"
+		return "https://" + host
 	}
 
 	return "https://" + host
