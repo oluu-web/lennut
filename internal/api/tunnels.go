@@ -182,7 +182,7 @@ func (h *TunnelHandler) createTunnelTx(ctx context.Context, userID, hostname, pr
 	err = tx.QueryRowContext(ctx, `
 		INSERT INTO tunnels (user_id, hostname, protocol, target_port, status)
 		VALUES ($1, $2, $3, $4, 'pending')
-		RETURNING id, user_id, hostname, protocol, target_port, status, created_at`,
+		RETURNING id, hostname, protocol, target_port, status, created_at`,
 		userID, hostname, protocol, targetPort,
 	).Scan(
 		&tunnel.ID,
