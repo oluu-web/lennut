@@ -37,8 +37,7 @@ tunnel http 3000
 You'll see output like:
 
 ```
-tunnel active
-  url         https://abc123.revtunnel.xyz
+  tunnel active
   Forwarding localhost:3000 at https://abc.revtunnel.xyz
   press Ctrl+C to stop
 ```
